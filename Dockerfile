@@ -25,5 +25,17 @@ RUN \
 
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
+# Ammonite
 RUN mkdir ~/.ammonite && wget -O ~/.ammonite/predef.scala https://git.io/vro0a
-RUN sudo wget -O /home/amm https://git.io/vASZm && chmod +x /home/amm
+RUN sudo wget -O /usr/local/bin/amm https://git.io/vASZm && chmod +x /usr/local/bin/amm
+
+# Install tmux (for some reason it doens't come by default or with apt)
+# TODO this is extremely wrong, should use proper repos
+RUN wget -O libevent-2.0-5.deb ftp.us.debian.org/debian/pool/main/libe/libevent/libevent-2.0-5_2.0.21-stable-3_amd64.deb
+RUN wget -O tmux_2.3.deb ftp.us.debian.org/debian/pool/main/t/tmux/tmux_2.3-4_amd64.deb
+RUN dpkg -i libevent-2.0-5.deb
+RUN dpkg -i tmux_2.3.deb
+
+# Install R packages 
+RUN Rscript -e 'install.packages("tmuxr")'
+RUN Rscript -e 'devtools::install_github("datascienceworkshops/knitractive")'
